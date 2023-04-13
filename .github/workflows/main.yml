@@ -33,7 +33,7 @@ jobs:
       - name: Build the Docker image
         id: build-docker-image
         run: |
-          docker build -t test-app .
+          docker build -t test-app ./test-app
 
       - name: Push the Docker image to Amazon ECR
         id: push-image
