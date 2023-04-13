@@ -16,11 +16,11 @@ jobs:
       # 기존 repository의 코드 체크아웃
       - name: 코드 체크아웃
         id: checkout-code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.5.1
 
       - name: AWS IAM 사용자 설정
         id: configure-aws-credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -40,7 +40,7 @@ jobs:
         run: |
           docker tag cicd-test ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ github.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ github.sha }}
-          echo "::set-output name=image_url::${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ github.sha }}"
+          echo "${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ github.sha }}" >> $GITHUB_ENV
 
       - name: SSH into EC2 instance and pull the Docker image
         uses: appleboy/ssh-action@master
