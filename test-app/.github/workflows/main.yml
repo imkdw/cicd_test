@@ -33,12 +33,12 @@ jobs:
       - name: Build the Docker image
         id: build-docker-image
         run: |
-          docker build -t cicd-test .
+          docker build -t test-app .
 
       - name: Push the Docker image to Amazon ECR
         id: push-image
         run: |
-          docker tag cicd-test ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ github.sha }}
+          docker tag test-app ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ github.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ github.sha }}
           echo "${{ steps.login-ecr.outputs.registry }}/${{ github.repository }}:${{ github.sha }}" >> $GITHUB_ENV
 
@@ -58,6 +58,6 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker stop cicd-test || true
-            docker rm cicd-test || true
-            docker run -d --name cicd-test -p 80:3000 ${{ steps.push-image.outputs.image_url }}
+            docker stop test-app || true
+            docker rm test-app || true
+            docker run -d --name test-app -p 80:3000 ${{ steps.push-image.outputs.image_url }}
