@@ -37,6 +37,15 @@ jobs:
           docker tag test-app 280926337264.dkr.ecr.ap-northeast-2.amazonaws.com/hellodeveloper
           docker push 280926337264.dkr.ecr.ap-northeast-2.amazonaws.com/hellodeveloper
 
+      - name: EC2에서 ECR에 로그인하기
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_IP }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            aws ecr get-login-password --profile dongwoo --region ap-northeast-2 | docker login --username AWS --password-stdin 280926337264.dkr.ecr.ap-northeast-2.amazonaws.com/hellodeveloper
+
       - name: EC2에서 도커 이미지를 가져오기
         uses: appleboy/ssh-action@master
         with:
